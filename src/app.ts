@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // route handler
-app.use("api/v1", routes);
+app.use("/api/v1", routes);
 
 // Global error handler
 app.use(GlobalErrorHandler.globalErrorHandler);
