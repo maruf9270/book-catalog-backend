@@ -3,6 +3,7 @@ import config from "../../config";
 import { IGenericErrorMessages } from "../../interfaces/errorMessages";
 import Apierror from "../../error/apiError";
 import { IGenericErrorResponse } from "../../interfaces/errorResponse";
+import { handleDuplicateError } from "../../error/duplicateErrorHandler";
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   // Global error handler properties
@@ -11,7 +12,12 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   let errorMessages: IGenericErrorMessages[] = [];
   let stack = config.node_env !== "production" ? error?.stack : undefined;
 
-  if (error instanceof Apierror) {
+  if (error?.code == "11000") {
+    const simplifiedError = handleDuplicateError(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorMessages = simplifiedError.errorMessages;
+  } else if (error instanceof Apierror) {
     message = error.name;
     errorMessages = error?.message
       ? [
