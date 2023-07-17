@@ -25,7 +25,7 @@ const login = async (param: IGenericLogin): Promise<IgenericLoginRespone> => {
       phoneNumber: param.phoneNumber,
     },
     { password: 1, phoneNumber: 1 }
-  );
+  ).select("+password");
   if (!doesUserExists) {
     throw new Apierror(httpStatus.NOT_FOUND, "Invalid phoneNumber");
   }

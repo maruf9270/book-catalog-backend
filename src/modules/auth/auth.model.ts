@@ -24,6 +24,7 @@ const authSchema = new Schema<IGenericAuth>({
   password: {
     type: String,
     required: true,
+    select: 0,
   },
 });
 
