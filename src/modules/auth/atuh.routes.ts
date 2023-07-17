@@ -11,4 +11,11 @@ router.post(
   AuthController.signUp
 );
 
+// Route for logging in
+router.post(
+  "/login",
+  RequestValidator.requestValidator(AuthValidator.loginValidator),
+  AuthController.login
+);
+
 export const AuthRoutes = { router };

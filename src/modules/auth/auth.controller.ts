@@ -18,4 +18,20 @@ const signUp: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const AuthController = { signUp };
+// Controller function for logging in
+const login: RequestHandler = async (req, res, next) => {
+  try {
+    const result = await AuthService.login(req.body);
+    res.cookie("user", result.refreashToken, { httpOnly: true });
+    ResponseSender.responseSender(res, {
+      success: true,
+      message: "Logged in successfully",
+      data: { accessToken: result.accessToken },
+      statusCode: httpStatus.OK,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const AuthController = { signUp, login };
