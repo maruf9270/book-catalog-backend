@@ -24,4 +24,9 @@ routes.patch(
   AuthChecker.authChecker,
   BookController.patchBook
 );
+// Routes for deleting a book
+routes.delete("/:id", AuthChecker.authChecker, BookController.removeBook);
+
+// Routes for getting a specific book
+routes.get("/:id", BookController.singleBook);
 export const BookRoutes = { routes };

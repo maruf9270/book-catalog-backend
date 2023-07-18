@@ -56,4 +56,43 @@ const patchBook: RequestHandler = async (req, res, next) => {
     });
   } catch (error) {}
 };
-export const BookController = { newBook, getBook, patchBook };
+
+// For deleting book
+const removeBook: RequestHandler = async (req, res, next) => {
+  try {
+    const bookId = req.params.id;
+    const userId = req?.user?._id;
+    const result = await BookService.deleteBook(bookId, userId);
+    ResponseSender.responseSender(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Book deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller for single book
+const singleBook: RequestHandler = async (req, res, next) => {
+  try {
+    const bookId = req.params.id;
+    const result = await BookService.singleGet(bookId);
+    ResponseSender.responseSender(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Book fetched succssfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const BookController = {
+  newBook,
+  getBook,
+  patchBook,
+  removeBook,
+  singleBook,
+};

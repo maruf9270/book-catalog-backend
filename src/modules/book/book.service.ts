@@ -59,18 +59,45 @@ const patchBooks = async (
   bookId: string,
   userId: Types.ObjectId
 ) => {
-  const doesExists = BookModel.Book.find({
+  const doesExists = await BookModel.Book.find({
     _id: new ObjectId(bookId),
     user: new ObjectId(userId),
   });
-  if (!doesExists) {
+  if (!doesExists.length) {
     throw new Apierror(httpStatus.NOT_FOUND, "No book found to updated");
   }
   const result = await BookModel.Book.findOneAndUpdate(
     { _id: new ObjectId(bookId) },
     bookData,
     { new: true }
-  );
+  ).populate("user");
   return result;
 };
-export const BookService = { postBook, fetchBooks, patchBooks };
+
+// for deleting book
+const deleteBook = async (bookId: string, userId: Types.ObjectId) => {
+  const doesExists = await BookModel.Book.find({
+    _id: new ObjectId(bookId),
+    user: new ObjectId(userId),
+  });
+  if (!doesExists.length) {
+    throw new Apierror(httpStatus.NOT_FOUND, "No book found to delete");
+  }
+  const result = await BookModel.Book.findOneAndDelete({
+    _id: new ObjectId(bookId),
+  }).populate("user");
+  return result;
+};
+
+// For single book
+const singleGet = async (bookId: string) => {
+  const result = await BookModel.Book.findById(bookId).populate("user");
+  return result;
+};
+export const BookService = {
+  postBook,
+  fetchBooks,
+  patchBooks,
+  deleteBook,
+  singleGet,
+};
