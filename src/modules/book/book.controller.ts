@@ -40,4 +40,20 @@ const getBook: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
-export const BookController = { newBook, getBook };
+
+// Controller function for patching the book
+const patchBook: RequestHandler = async (req, res, next) => {
+  try {
+    const bookData = req.body;
+    const bookId = req.params.id;
+    const userId = req?.user?._id;
+    const result = await BookService.patchBooks(bookData, bookId, userId);
+    ResponseSender.responseSender(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Book updated successfully",
+      data: result,
+    });
+  } catch (error) {}
+};
+export const BookController = { newBook, getBook, patchBook };

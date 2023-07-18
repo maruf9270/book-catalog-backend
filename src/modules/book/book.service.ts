@@ -11,6 +11,10 @@ import { AuthModel } from "../auth/auth.model";
 import { IGenericAuth } from "../auth/auth.interface";
 import { BookModel } from "./book.model";
 import { BookConstant } from "./book.constant";
+import { Types } from "mongoose";
+import { ObjectId } from "mongodb";
+import Apierror from "../../error/apiError";
+import httpStatus from "http-status";
 
 // Service function for adding new books
 const postBook = async (
@@ -49,4 +53,24 @@ const fetchBooks = async (param: Partial<IGenericSearchTerm>) => {
   const result = await BookModel.Book.find(whereConditions);
   return result;
 };
-export const BookService = { postBook, fetchBooks };
+// service function for updating the books
+const patchBooks = async (
+  bookData: Partial<IGenericBook>,
+  bookId: string,
+  userId: Types.ObjectId
+) => {
+  const doesExists = BookModel.Book.find({
+    _id: new ObjectId(bookId),
+    user: new ObjectId(userId),
+  });
+  if (!doesExists) {
+    throw new Apierror(httpStatus.NOT_FOUND, "No book found to updated");
+  }
+  const result = await BookModel.Book.findOneAndUpdate(
+    { _id: new ObjectId(bookId) },
+    bookData,
+    { new: true }
+  );
+  return result;
+};
+export const BookService = { postBook, fetchBooks, patchBooks };

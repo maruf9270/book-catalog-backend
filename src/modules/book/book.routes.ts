@@ -17,4 +17,11 @@ routes.post(
 // Routes for getting all the books
 routes.get("/", BookController.getBook);
 
+// Routes patching a single book
+routes.patch(
+  "/:id",
+  RequestValidator.requestValidator(BookValidator.patchValidate),
+  AuthChecker.authChecker,
+  BookController.patchBook
+);
 export const BookRoutes = { routes };
