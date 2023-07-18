@@ -13,3 +13,11 @@ export type IGenericTokenInfo = {
   _id: Types.ObjectId | string;
   phoneNumber: string;
 };
+
+export type IGenericSearchTerm = {
+  title: string;
+  author: string;
+  genre: string;
+  searchTerm: string;
+  publicationDate: string;
+};

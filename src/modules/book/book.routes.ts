@@ -14,4 +14,7 @@ routes.post(
   BookController.newBook
 );
 
+// Routes for getting all the books
+routes.get("/", BookController.getBook);
+
 export const BookRoutes = { routes };

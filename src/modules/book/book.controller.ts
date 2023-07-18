@@ -3,6 +3,8 @@ import { BookService } from "./book.service";
 import { ResponseSender } from "../../shared/responseSender";
 import httpStatus from "http-status";
 import { IGenericAuth } from "../auth/auth.interface";
+import pick from "../../shared/pick";
+import { BookConstant } from "./book.constant";
 
 // Controller function for adding new book
 const newBook: RequestHandler = async (req, res, next) => {
@@ -22,4 +24,20 @@ const newBook: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
-export const BookController = { newBook };
+
+// Controller function for getting all the books
+const getBook: RequestHandler = async (req, res, next) => {
+  try {
+    const searchOptions = pick(req.query, BookConstant.searchOptions);
+    const result = await BookService.fetchBooks(searchOptions);
+    ResponseSender.responseSender(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      data: result,
+      message: "Book data retrived successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const BookController = { newBook, getBook };
