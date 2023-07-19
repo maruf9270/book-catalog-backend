@@ -12,4 +12,7 @@ routes.post(
   AuthChecker.authChecker,
   ReviewController.newReview
 );
+
+// for specific book review
+routes.get("/:id", ReviewController.specificBookReview);
 export const ReviewRoutes = { routes };

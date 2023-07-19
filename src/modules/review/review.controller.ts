@@ -16,4 +16,20 @@ const newReview: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
-export const ReviewController = { newReview };
+
+//get Reivews for specific book
+const specificBookReview: RequestHandler = async (req, res, next) => {
+  try {
+    const bookId = req.params.id;
+    const result = await ReviewService.fetchReview(bookId);
+    ResponseSender.responseSender(res, {
+      success: true,
+      message: "Review featched successfully",
+      statusCode: httpStatus.OK,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const ReviewController = { newReview, specificBookReview };

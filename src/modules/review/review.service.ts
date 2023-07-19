@@ -27,4 +27,12 @@ const postReview = async (review: IGenericReview, userId: Types.ObjectId) => {
   ).populate("book");
   return result;
 };
-export const ReviewService = { postReview };
+
+// for specific book
+const fetchReview = async (bookId: string) => {
+  const result = await ReviewModel.Review.find({ book: new ObjectId(bookId) })
+    .populate("user")
+    .populate("book");
+  return result;
+};
+export const ReviewService = { postReview, fetchReview };
