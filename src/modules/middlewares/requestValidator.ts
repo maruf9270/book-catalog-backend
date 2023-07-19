@@ -7,7 +7,7 @@ const requestValidator =
     try {
       await schema.parseAsync({
         body: req.body,
-        param: req.params,
+        params: req.params,
         querry: req.query,
         cookies: req.cookies,
       });
