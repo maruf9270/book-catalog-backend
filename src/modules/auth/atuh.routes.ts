@@ -18,4 +18,11 @@ router.post(
   AuthController.login
 );
 
+// Route for generating auth Token and user info
+router.post(
+  "/refresh-token",
+  RequestValidator.requestValidator(AuthValidator.tokenValidator),
+  AuthController.newAccessToken
+);
+
 export const AuthRoutes = { router };

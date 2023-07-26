@@ -14,4 +14,5 @@ export type IGenericLogin = {
 export type IgenericLoginRespone = {
   refreashToken: string;
   accessToken: string;
+  user: IGenericAuth;
 };

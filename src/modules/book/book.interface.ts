@@ -7,6 +7,10 @@ export type IGenericBook = {
   author: string;
   genre: string;
   publicationDate: string;
+  image: {
+    image: string;
+    thumbnail: string;
+  };
 };
 
 export type IGenericTokenInfo = {
@@ -20,4 +24,6 @@ export type IGenericSearchTerm = {
   genre: string;
   searchTerm: string;
   publicationDate: string;
+  shortBy: string;
+  limit: string;
 };

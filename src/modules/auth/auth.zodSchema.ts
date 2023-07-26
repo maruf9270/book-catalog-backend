@@ -15,4 +15,9 @@ const loginValidator = z.object({
   }),
 });
 
-export const AuthValidator = { authVlaidator, loginValidator };
+const tokenValidator = z.object({
+  cookies: z.object({
+    user: z.string({ required_error: "Cookie is required" }),
+  }),
+});
+export const AuthValidator = { authVlaidator, loginValidator, tokenValidator };

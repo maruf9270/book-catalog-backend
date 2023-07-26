@@ -54,7 +54,9 @@ const patchBook: RequestHandler = async (req, res, next) => {
       message: "Book updated successfully",
       data: result,
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
 
 // For deleting book

@@ -11,7 +11,7 @@ import { AuthModel } from "../auth/auth.model";
 import { IGenericAuth } from "../auth/auth.interface";
 import { BookModel } from "./book.model";
 import { BookConstant } from "./book.constant";
-import { Types } from "mongoose";
+import { SortOrder, Types } from "mongoose";
 import { ObjectId } from "mongodb";
 import Apierror from "../../error/apiError";
 import httpStatus from "http-status";
@@ -31,7 +31,9 @@ const postBook = async (
 };
 // Service function for getting all the books
 const fetchBooks = async (param: Partial<IGenericSearchTerm>) => {
-  const { searchTerm, ...filterOptions } = param;
+  const { searchTerm, shortBy, limit, ...filterOptions } = param;
+  const sortOption = shortBy as string | "createdAt";
+  const limitOption = Number(limit) | 0;
   let query: any = [];
   if (searchTerm) {
     query.push({
@@ -48,9 +50,15 @@ const fetchBooks = async (param: Partial<IGenericSearchTerm>) => {
       }),
     });
   }
+  const sortConditions: { [key: string]: SortOrder } = {};
 
+  if (sortOption) {
+    sortConditions[sortOption] = "desc";
+  }
   const whereConditions = query.length > 0 ? { $and: query } : {};
-  const result = await BookModel.Book.find(whereConditions);
+  const result = await BookModel.Book.find(whereConditions)
+    .sort({ createdAt: "descending" })
+    .limit(limitOption);
   return result;
 };
 // service function for updating the books
@@ -63,8 +71,12 @@ const patchBooks = async (
     _id: new ObjectId(bookId),
     user: new ObjectId(userId),
   });
+
   if (!doesExists.length) {
-    throw new Apierror(httpStatus.NOT_FOUND, "No book found to updated");
+    throw new Apierror(
+      httpStatus.NOT_FOUND,
+      "No book found to updated Or you are not authorized to update the book"
+    );
   }
   const result = await BookModel.Book.findOneAndUpdate(
     { _id: new ObjectId(bookId) },
@@ -81,7 +93,10 @@ const deleteBook = async (bookId: string, userId: Types.ObjectId) => {
     user: new ObjectId(userId),
   });
   if (!doesExists.length) {
-    throw new Apierror(httpStatus.NOT_FOUND, "No book found to delete");
+    throw new Apierror(
+      httpStatus.NOT_FOUND,
+      "No book found to delete Or you are not authorized to delete this book"
+    );
   }
   const result = await BookModel.Book.findOneAndDelete({
     _id: new ObjectId(bookId),

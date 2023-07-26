@@ -4,6 +4,8 @@ const searchOptions = [
   "genre",
   "publicationDate",
   "searchTerm",
+  "shortBy",
+  "limit",
 ];
 
 export const BookConstant = { searchOptions };
