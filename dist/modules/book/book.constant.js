@@ -7,5 +7,7 @@ const searchOptions = [
     "genre",
     "publicationDate",
     "searchTerm",
+    "shortBy",
+    "limit",
 ];
 exports.BookConstant = { searchOptions };

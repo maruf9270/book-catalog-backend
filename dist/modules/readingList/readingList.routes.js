@@ -10,4 +10,8 @@ const readingList_contrller_1 = require("./readingList.contrller");
 const routes = express_1.default.Router();
 // for adding new readin list
 routes.post("/", authChecker_1.AuthChecker.authChecker, readingList_contrller_1.ReadingListController.addToReadingList);
+// for getting the reading list
+routes.get("/", authChecker_1.AuthChecker.authChecker, readingList_contrller_1.ReadingListController.getReadingList);
+// Change reading list status
+routes.patch("/", authChecker_1.AuthChecker.authChecker, readingList_contrller_1.ReadingListController.changeStatus);
 exports.ReadingListRoutes = { routes };

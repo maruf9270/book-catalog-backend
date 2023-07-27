@@ -5,6 +5,8 @@
   "repository": "https://github.com/maruf9270/book-catalog-backend.git",
   "author": "maruf9270 <maruf9270@gmail.com>",
   "license": "MIT",
+  "proxy":"http://localhost:5173/",
+  
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
     "start": "node ./dist/server.js",

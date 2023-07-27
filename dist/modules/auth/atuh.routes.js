@@ -13,6 +13,8 @@ const router = express_1.default.Router();
 router.post("/sign-up", requestValidator_1.RequestValidator.requestValidator(auth_zodSchema_1.AuthValidator.authVlaidator), auth_controller_1.AuthController.signUp);
 // Route for logging in
 router.post("/login", requestValidator_1.RequestValidator.requestValidator(auth_zodSchema_1.AuthValidator.loginValidator), auth_controller_1.AuthController.login);
+// Route for logout
+router.post("/logout", auth_controller_1.AuthController.logout);
 // Route for generating auth Token and user info
-router.post("/refresh-token", requestValidator_1.RequestValidator.requestValidator(auth_zodSchema_1.AuthValidator.tokenValidator), auth_controller_1.AuthController.newAccessToken);
+router.post("/refresh-token", auth_controller_1.AuthController.newAccessToken);
 exports.AuthRoutes = { router };

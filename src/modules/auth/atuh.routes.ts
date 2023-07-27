@@ -18,11 +18,10 @@ router.post(
   AuthController.login
 );
 
+// Route for logout
+router.post("/logout", AuthController.logout);
+
 // Route for generating auth Token and user info
-router.post(
-  "/refresh-token",
-  RequestValidator.requestValidator(AuthValidator.tokenValidator),
-  AuthController.newAccessToken
-);
+router.post("/refresh-token", AuthController.newAccessToken);
 
 export const AuthRoutes = { router };

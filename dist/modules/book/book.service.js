@@ -37,7 +37,9 @@ const postBook = (param, user) => __awaiter(void 0, void 0, void 0, function* ()
 });
 // Service function for getting all the books
 const fetchBooks = (param) => __awaiter(void 0, void 0, void 0, function* () {
-    const { searchTerm } = param, filterOptions = __rest(param, ["searchTerm"]);
+    const { searchTerm, shortBy, limit } = param, filterOptions = __rest(param, ["searchTerm", "shortBy", "limit"]);
+    const sortOption = shortBy;
+    const limitOption = Number(limit) | 0;
     let query = [];
     if (searchTerm) {
         query.push({
@@ -54,8 +56,14 @@ const fetchBooks = (param) => __awaiter(void 0, void 0, void 0, function* () {
             }),
         });
     }
+    const sortConditions = {};
+    if (sortOption) {
+        sortConditions[sortOption] = "desc";
+    }
     const whereConditions = query.length > 0 ? { $and: query } : {};
-    const result = yield book_model_1.BookModel.Book.find(whereConditions);
+    const result = yield book_model_1.BookModel.Book.find(whereConditions)
+        .sort({ createdAt: "descending" })
+        .limit(limitOption);
     return result;
 });
 // service function for updating the books
@@ -65,7 +73,7 @@ const patchBooks = (bookData, bookId, userId) => __awaiter(void 0, void 0, void 
         user: new mongodb_1.ObjectId(userId),
     });
     if (!doesExists.length) {
-        throw new apiError_1.default(http_status_1.default.NOT_FOUND, "No book found to updated");
+        throw new apiError_1.default(http_status_1.default.NOT_FOUND, "No book found to updated Or you are not authorized to update the book");
     }
     const result = yield book_model_1.BookModel.Book.findOneAndUpdate({ _id: new mongodb_1.ObjectId(bookId) }, bookData, { new: true }).populate("user");
     return result;
@@ -77,7 +85,7 @@ const deleteBook = (bookId, userId) => __awaiter(void 0, void 0, void 0, functio
         user: new mongodb_1.ObjectId(userId),
     });
     if (!doesExists.length) {
-        throw new apiError_1.default(http_status_1.default.NOT_FOUND, "No book found to delete");
+        throw new apiError_1.default(http_status_1.default.NOT_FOUND, "No book found to delete Or you are not authorized to delete this book");
     }
     const result = yield book_model_1.BookModel.Book.findOneAndDelete({
         _id: new mongodb_1.ObjectId(bookId),

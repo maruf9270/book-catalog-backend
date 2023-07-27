@@ -23,9 +23,10 @@ const login: RequestHandler = async (req, res, next) => {
   try {
     const result = await AuthService.login(req.body);
     res.cookie("user", result.refreashToken, {
-      secure: false,
+      secure: true,
       maxAge: 360 * 24 * 60 * 60 * 1000,
       httpOnly: false,
+      sameSite: "none",
     });
     ResponseSender.responseSender(res, {
       success: true,
@@ -55,4 +56,23 @@ const newAccessToken: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const AuthController = { signUp, login, newAccessToken };
+// For log out
+const logout: RequestHandler = async (req, res, next) => {
+  try {
+    res.cookie("user", "", {
+      secure: true,
+      maxAge: -(360 * 24 * 60 * 60 * 1000),
+      httpOnly: false,
+      sameSite: "none",
+    });
+    ResponseSender.responseSender(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Logged out successfully",
+      data: "",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const AuthController = { signUp, login, newAccessToken, logout };

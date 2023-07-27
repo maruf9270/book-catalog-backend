@@ -64,7 +64,9 @@ const patchBook = (req, res, next) => __awaiter(void 0, void 0, void 0, function
             data: result,
         });
     }
-    catch (error) { }
+    catch (error) {
+        next(error);
+    }
 });
 // For deleting book
 const removeBook = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

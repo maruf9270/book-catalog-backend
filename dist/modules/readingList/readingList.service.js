@@ -34,9 +34,10 @@ const postReadingList = (readingList) => __awaiter(void 0, void 0, void 0, funct
         const result = yield readingList_model_1.ReadingListModel.ReadingList.create(data);
         return result;
     }
-    if (doesExist === null || doesExist === void 0 ? void 0 : doesExist.books.includes({
-        book: readingList.books.book,
-    })) {
+    const doesBookExistsONReadingList = yield readingList_model_1.ReadingListModel.ReadingList.find({
+        books: { $elemMatch: { book: new mongodb_1.ObjectId(readingList.books.book) } },
+    });
+    if (doesBookExistsONReadingList.length > 0) {
         throw new apiError_1.default(http_status_1.default.CONFLICT, "Book already exists on your reading list");
     }
     const result = yield readingList_model_1.ReadingListModel.ReadingList.updateOne({ user: readingList.user }, {
@@ -49,4 +50,30 @@ const postReadingList = (readingList) => __awaiter(void 0, void 0, void 0, funct
     });
     return result;
 });
-exports.ReadingListService = { postReadingList };
+// For getting all the reading list
+const fetchReadingList = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield readingList_model_1.ReadingListModel.ReadingList.find({
+        user: new mongodb_1.ObjectId(id),
+    }).populate({
+        path: "books",
+        populate: { path: "book" },
+    });
+    return result;
+});
+// CHange status
+const changeStatus = (param, user) => __awaiter(void 0, void 0, void 0, function* () {
+    const readingList = yield readingList_model_1.ReadingListModel.ReadingList.findOne({
+        user: new mongodb_1.ObjectId(user),
+    });
+    const bookData = readingList === null || readingList === void 0 ? void 0 : readingList.books.find((book) => book.book._id.toString() === param.book.toString());
+    if (bookData && readingList) {
+        bookData.status = param.status;
+        readingList.save();
+    }
+    return readingList;
+});
+exports.ReadingListService = {
+    postReadingList,
+    fetchReadingList,
+    changeStatus,
+};

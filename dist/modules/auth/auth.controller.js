@@ -35,7 +35,12 @@ const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield auth_service_1.AuthService.login(req.body);
-        res.cookie("user", result.refreashToken, { httpOnly: true });
+        res.cookie("user", result.refreashToken, {
+            secure: true,
+            maxAge: 360 * 24 * 60 * 60 * 1000,
+            httpOnly: false,
+            sameSite: "none",
+        });
         responseSender_1.ResponseSender.responseSender(res, {
             success: true,
             message: "Logged in successfully",
@@ -63,4 +68,24 @@ const newAccessToken = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         next(error);
     }
 });
-exports.AuthController = { signUp, login, newAccessToken };
+// For log out
+const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.cookie("user", "", {
+            secure: true,
+            maxAge: -(360 * 24 * 60 * 60 * 1000),
+            httpOnly: false,
+            sameSite: "none",
+        });
+        responseSender_1.ResponseSender.responseSender(res, {
+            success: true,
+            statusCode: http_status_1.default.OK,
+            message: "Logged out successfully",
+            data: "",
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.AuthController = { signUp, login, newAccessToken, logout };
